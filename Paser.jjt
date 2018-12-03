@@ -1,11 +1,41 @@
 /**
  * JJTree template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
- */options{  static = false;}PARSER_BEGIN(Paser)package assignment;
+ */
+options
+{
+  static = false;
+}
+
+PARSER_BEGIN(Paser)
+package assignment;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-public class Paser{  public static void main(String args []) throws Exception  {    System.out.println("Reading from standard input...");    System.out.print("Enter an expression like \"1+(2+3)*var;\" :");
-    InputStream in = new FileInputStream("in.data");    Paser p = new Paser(in);    try    {      SimpleNode n = p.Start();      n.dump("");      System.out.println("Thank you.");    }    catch (Exception e)    {      System.out.println("Oops.");      System.out.println(e.getMessage());    }  }}PARSER_END(Paser)SKIP :
+public class Paser
+{
+  public static void main(String args []) throws Exception
+  {
+    System.out.println("Reading from standard input...");
+    System.out.println("Enter an expression like \"1+(2+3)*var;\" :");
+    InputStream in = new Paser(System.in).getClass().getClassLoader().getResourceAsStream("test.data");
+    Paser p = new Paser(in);
+    try
+    {
+      SimpleNode n = p.Start();
+      n.dump("");
+      System.out.println("Thank you.");
+    }
+    catch (Exception e)
+    {
+      System.out.println("Oops.");
+      System.out.println(e.getMessage());
+    }
+  }
+}
+
+PARSER_END(Paser)
+
+SKIP :
 {
   " "
 | "\t"
@@ -27,7 +57,7 @@ public class Paser{  public static void main(String args []) throws Exception
 
 
 
-TOKEN : /*±£¡Ù◊÷*/
+TOKEN : /*‰øùÁïôÂ≠ó*/
 
 {
  < IF : "if">
@@ -35,6 +65,7 @@ TOKEN : /*±£¡Ù◊÷*/
 | < WHILE : "while">
 | < VOID : "void">
 | < INT : "int">
+| < DOUBLE : "double" >
 | < RETURN : "return">
 
 }
@@ -55,10 +86,10 @@ TOKEN : /* LITERALS */
 
 
 
-TOKEN : /*±Í ∂∑˚ */
+TOKEN : /*Ê†áËØÜÁ¨¶ */
 {
-  <MAIN: "main" >
-| < IDENTIFIER :
+  
+< IDENTIFIER :
    < LETTER >
     (
       < LETTER >
@@ -69,7 +100,7 @@ TOKEN : /*±Í ∂∑˚ */
 }
 
 
-TOKEN : /*‘ÀÀ„∑˚*/
+TOKEN : /*ËøêÁÆóÁ¨¶*/
 
 {
  < ADD : "+">
@@ -78,8 +109,7 @@ TOKEN : /*‘ÀÀ„∑˚*/
 }
 
 
-
-TOKEN : /*ΩÁ∑˚*/
+TOKEN : /*ÁïåÁ¨¶*/
 
 {
  < MAOHAO : ",">
@@ -90,14 +120,141 @@ TOKEN : /*ΩÁ∑˚*/
 | < RIGHTHKH : "}">
 }
 
-SimpleNode Start() :{}{  Program()  {    return jjtThis;  }}
+
+SimpleNode Start() :
+{}
+{
+  Program()
+  {
+    return jjtThis;
+  }
+}
+
 void Program() :
 {}
 {
-  (    <INT> <MAIN><LEFTKH ><RIGHTKH >
-  < LEFTHKH > <RIGHTHKH >
-	|<VOID> <MAIN><LEFTKH ><RIGHTKH >
-  < LEFTHKH > <RIGHTHKH >
-)
+  Function()
 }
-void Expression() :{}{  AdditiveExpression()}void AdditiveExpression() :{}{  MultiplicativeExpression()  (    (      "+"    | "-"    )    MultiplicativeExpression()  )*}void MultiplicativeExpression() :{}{  UnaryExpression()  (    (      "*"    | "/"    | "%"    )    UnaryExpression()  )*}void UnaryExpression() :{}{  "(" Expression() ")"| Identifier()| Integer()}void Identifier() :{}{  < IDENTIFIER >}void Integer() :{}{  < INTEGER_LITERAL >}
+
+void Function() :
+{}
+{
+	Type()
+	StatementBlock()
+}
+
+void Type() :
+{}
+{
+  (< INT >|< VOID >|< DOUBLE >)(< IDENTIFIER >)"()"
+}
+
+void StatementBlock() :
+{}
+{	"{"
+	(
+	   statement()
+	)
+	"}"
+	
+}
+
+void statement() :
+{
+}
+{
+  loopStatement() | seqStatement()
+}
+
+
+void seqStatement() :
+{
+}
+{
+	
+}
+
+void loopStatement() :
+{}
+{
+  whileStatement()
+}
+
+void whileStatement() :
+{}
+{
+  ("while")"("
+  boolExpersion()")"
+ StatementBlock()
+}
+
+void boolExpersion():
+{}
+{
+  Expression()
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+void Expression() :
+{}
+{
+  AdditiveExpression()
+}
+
+void AdditiveExpression() :
+{}
+{
+  MultiplicativeExpression()
+  (
+    (
+      "+"
+    | "-"
+    )
+    MultiplicativeExpression()
+  )*
+}
+
+void MultiplicativeExpression() :
+{}
+{
+  UnaryExpression()
+  (
+    (
+      "*"
+    | "/"
+    | "%"
+    )
+    UnaryExpression()
+  )*
+}
+
+void UnaryExpression() :
+{}
+{
+  "(" Expression() ")"
+| Identifier()
+| Integer()
+}
+
+void Identifier() :
+{}
+{
+  < IDENTIFIER >
+}
+
+void Integer() :
+{}
+{
+  < INTEGER_LITERAL >
+}
