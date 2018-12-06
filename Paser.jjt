@@ -17,7 +17,7 @@ public class Paser
   {
     System.out.println("Reading from standard input...");
     System.out.println("Enter an expression like \"1+(2+3)*var;\" :");
-    InputStream in = new Paser(System.in).getClass().getClassLoader().getResourceAsStream("test.data");
+    InputStream in = new Paser(System.in).getClass().getClassLoader().getResourceAsStream("in.data");
     Paser p = new Paser(in);
     try
     {
@@ -104,7 +104,7 @@ TOKEN : /*运算符*/
 
 {
  < ADD : "+">
-| < BIGGER : " >">
+| < BIGGER : ">">
 | < EQUAL : "=">
 }
 
@@ -171,8 +171,21 @@ void seqStatement() :
 {
 }
 {
-	
+	decStatement()
 }
+
+void decStatement() :
+{
+}
+{
+  Type()
+  Identifier()
+  (
+    < MAOHAO >
+  Identifier()
+)*
+}
+
 
 void loopStatement() :
 {}
@@ -191,7 +204,9 @@ void whileStatement() :
 void boolExpersion():
 {}
 {
-  Expression()
+	Expression()
+	< BIGGER >
+	Expression()
 }
 
 
@@ -245,6 +260,7 @@ void UnaryExpression() :
   "(" Expression() ")"
 | Identifier()
 | Integer()
+(< FENHAO >)*
 }
 
 void Identifier() :
